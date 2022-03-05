@@ -31,6 +31,7 @@ class YoloLoss(nn.Module):
         
         box_preds[..., 2:4] = torch.sign(box_preds[..., 2:4]) * torch.sqrt(torch.abs(box_preds[..., 2:4]))
         box_targets[..., 2:4] = torch.sqrt(box_targets[..., 2:4])
+        
         # (N, S, S, 4) -> (N*S*S, 4)
         box_loss = self.mse(
                             torch.flatten(box_preds, end_dim=-2), 
@@ -56,6 +57,7 @@ class YoloLoss(nn.Module):
                                ) 
         
         # Class Loss
+        # (N, S, S, 20) -> (N*S*S, 20)
         class_loss = self.mse(
                               torch.flatten(obj_isExist * predictions[..., :20], end_dim=-2), 
                               torch.flatten(obj_isExist * target[..., :20], end_dim=-2)
