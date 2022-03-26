@@ -45,17 +45,17 @@ class Yolov1(nn.Module):
     def __init__(self, in_c=3, **kwargs) -> None:
         super(Yolov1, self).__init__()
         self.architecture = architecture_config
-        self.in_c    = in_c
-        self.Darknet = self.create_conv_layers(self.architecture)
-        self.FCs     = self.create_fcs_layers(**kwargs)
+        self.in_c         = in_c
+        self.Darknet      = self.create_conv_layers(self.architecture)
+        self.FCs          = self.create_fcs_layers(**kwargs)
       
     def forward(self, x):
         x = self.Darknet(x)
         return self.FCs(torch.flatten(x, start_dim=1))
     
     def create_conv_layers(self, architecture):
-        layers = []
-        in_c = self.in_c
+        layers = nn.ModuleList()
+        in_c   = self.in_c
         
         for layer in architecture_config:
             if type(layer) == tuple:
